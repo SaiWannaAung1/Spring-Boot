@@ -4,5 +4,7 @@ public interface UserRepository {
 	  Iterable<User> findAll();
 	  User findOne(Long id);
 	  User save(User user);
+	  User update(User user);
+	void delete(Long id);
 
 }

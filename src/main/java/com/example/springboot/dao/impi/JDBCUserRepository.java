@@ -13,40 +13,52 @@ import com.example.springboot.dto.User;
 public class JDBCUserRepository implements UserRepository{
 	@Autowired
 	private JdbcTemplate jdbc;
-	
-	
+
 	@Override
 	public Iterable<User> findAll() {
 		return jdbc.query("select id, name, email from User",
-			      this::mapRowToUser);
+				this::mapRowToUser);
 	}
 
 	@Override
 	public User findOne(Long id) {
 		return jdbc.queryForObject(
-			      "select id, name, email from User where id=?",
-			      this::mapRowToUser, id);
+				"select id, name, email from User where id=?",
+				this::mapRowToUser, id);
 	}
 
 	@Override
 	public User save(User user) {
 		jdbc.update(
-			      "insert into User ( name, email) values (?, ?)",
-			      user.getName(),
-			      user.getEmail());
+				"insert into User ( name, email) values (?, ?)",
+				user.getName(),
+				user.getEmail());
 		return user;
 	}
 	private User mapRowToUser(ResultSet rs, int rowNum)
-		    throws SQLException {
-		  return new User(
-		      rs.getLong("id"),
-		      rs.getString("name"),
-		      rs.getString("email"));
-		}
-	
-	
-	
-	
-	
+			throws SQLException {
+		return new User(
+				rs.getLong("id"),
+				rs.getString("name"),
+				rs.getString("email"));
+	}
+
+	@Override
+	public User update(User user) {
+		jdbc.update(
+				"UPDATE User SET name=?, email=? WHERE id=?",
+				user.getName(),
+				user.getEmail(),
+				user.getId());
+		return user;
+	}
+
+	@Override
+	public void delete(Long id) {
+		jdbc.update(
+				"DELETE FROM User WHERE id=?",
+				id);
+	}
+
 
 }

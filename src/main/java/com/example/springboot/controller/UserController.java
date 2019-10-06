@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -18,6 +19,16 @@ import com.example.springboot.dto.User;
 public class UserController {
 	@Autowired
 	UserRepository userRepository;
+
+	@GetMapping("/list")
+	public String users(Model model)
+	{
+		Iterable<User> users = this.userRepository.findAll();
+
+		model.addAttribute("users", users);
+		System.out.println("Controller User");
+		return "user/users";
+	}
 	@GetMapping("/new")
 	public String newUser(Model model)
 	{
@@ -31,12 +42,39 @@ public class UserController {
 		if( error.hasErrors())
 		{
 			System.out.println("Have Error ");
-		}else
-		{
-			this.userRepository.save(user);
+			return "user/new";
 		}
-		System.out.println("Name "+user.getName());
-		System.out.println("Email "+user.getEmail());
+		else
+		{
+			if( user.getId() != null)
+			{
+				this.userRepository.update(user);
+			}
+			else
+			{
+				this.userRepository.save(user);
+			}
+
+			return "redirect:/user/list";
+		}
+
+
+	}
+	@GetMapping("/edit/{id}")
+	public String editUser(@PathVariable Long id, Model model)
+	{
+		System.out.println("User id in eidt "+id);
+		User user = this.userRepository.findOne(id);
+		model.addAttribute("user", user);
 		return "user/new";
 	}
+
+	@GetMapping("/delete/{id}")
+	public String deleteUser(@PathVariable Long id)
+	{
+		System.out.println("User id in delete "+id);
+		this.userRepository.delete(id);
+		return "redirect:/user/list";
+	}
+
 }
