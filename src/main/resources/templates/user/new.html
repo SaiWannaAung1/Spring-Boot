@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+ <html xmlns="http://www.w3.org/1999/xhtml"
+       xmlns:th="http://www.thymeleaf.org">
+   <head>
+     <title>Spring Boot App</title>
+   </head>
+   
+  <style>
+   .validationError{
+   color:red;
+   
+   }
+   
+  
+  </style>
+   
+   <body>
+     <h1>Welcome to...</h1>
+    
+     <form method="POST" th:object="${user}">
+     	Name <input type="text"  th:field="*{name}" value="*{name}"></p>
+     	Email <input type="text" th:field="*{email}" value="*{email}"></p>
+     <span class="validationError" th:if="${#fields.hasErrors('email')}"
+     th:error="*{email}">
+     Email Have Error
+     
+     </span>
+     	<button type="submit">Submit</button>
+     </form>
+</body>
+</html>
