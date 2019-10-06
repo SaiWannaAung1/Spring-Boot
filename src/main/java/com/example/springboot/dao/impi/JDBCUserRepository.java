@@ -16,21 +16,21 @@ public class JDBCUserRepository implements UserRepository{
 
 	@Override
 	public Iterable<User> findAll() {
-		return jdbc.query("select id, name, email from User",
+		return jdbc.query("SELECT id, name, email FROM User",
 				this::mapRowToUser);
 	}
 
 	@Override
 	public User findOne(Long id) {
 		return jdbc.queryForObject(
-				"select id, name, email from User where id=?",
+				"SELECT id, name, email FROM User where id=?",
 				this::mapRowToUser, id);
 	}
 
 	@Override
 	public User save(User user) {
 		jdbc.update(
-				"insert into User ( name, email) values (?, ?)",
+				"SELECT into User ( name, email) VALUES (?, ?)",
 				user.getName(),
 				user.getEmail());
 		return user;
